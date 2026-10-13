@@ -51,7 +51,7 @@ button{font:inherit;cursor:pointer}
 .aa-btn--ghost:hover{background:rgba(255,255,255,.05);border-color:var(--lime)}
 
 /* ---------- header ---------- */
-.aa-header{position:sticky;top:0;z-index:60;background:var(--ink);border-bottom:1px solid var(--line);transition:background .4s,backdrop-filter .4s}
+.aa-header{position:sticky;top:0;z-index:60;background:var(--ink);border-bottom:1px solid var(--line);transition:background .4s}
 .admin-bar .aa-header{top:32px}
 .aa-header.is-scrolled{background:rgba(9,11,13,.96)}
 .aa-nav{max-width:1600px;margin:0 auto;height:96px;padding:0 var(--pad);display:flex;align-items:center;justify-content:space-between;gap:24px}
