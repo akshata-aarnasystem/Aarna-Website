@@ -123,74 +123,95 @@ function aaInit() {
   /* ---------- hero: generative growth filaments on canvas ---------- */
   var cv = $('[data-growth-canvas]');
   if (cv && cv.getContext) {
-    var ctx = cv.getContext('2d'), W = 0, H = 0, dpr = Math.min(window.devicePixelRatio || 1, 2), mx = 0, my = 0, tx = 0, ty = 0, vis = true, fil = [], seed = 7;
+    var ctx = cv.getContext('2d'), W = 0, H = 0, dpr = 1, mx = 0, my = 0, tx = 0, ty = 0, vis = true, fil = [], seed = 7, raf = 0;
     var rnd = function () { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; };
     function size() {
-      var r = cv.getBoundingClientRect(); W = r.width; H = r.height; cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      var r = cv.getBoundingClientRect(), small = window.matchMedia('(max-width: 640px)').matches;
+      W = r.width; H = r.height; dpr = Math.min(window.devicePixelRatio || 1, small ? 1 : 1.5);
+      cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       seed = 7; fil = [];
-      for (var k = 0; k < 22; k++) fil.push({ a: rnd() * 0.5 + 0.1, s: rnd() * 0.8 + 0.4, o: rnd() * 6, w: rnd() * 1.4 + 0.3, hue: rnd() });
+      for (var k = 0; k < (small ? 10 : 16); k++) fil.push({ a: rnd() * 0.5 + 0.1, s: rnd() * 0.8 + 0.4, o: rnd() * 6, w: rnd() * 1.4 + 0.3, hue: rnd() });
+      schedule();
     }
-    function pt(f, t, time) {
+    function curve(f, time) {
       var x0 = W * (0.12 + f.a * 0.25), y0 = H * 1.02;
       var x1 = W * (0.62 + f.a * 0.35), y1 = H * (0.06 + f.a * 0.18);
       var sw = Math.sin(time * 0.0006 * f.s + f.o) * W * 0.08;
-      var c1x = x0 + W * 0.05 + sw, c1y = H * 0.62, c2x = x1 - W * 0.28 - sw * 0.5, c2y = H * 0.38;
+      return { x0: x0, y0: y0, x1: x1, y1: y1, c1x: x0 + W * 0.05 + sw, c1y: H * 0.62, c2x: x1 - W * 0.28 - sw * 0.5, c2y: H * 0.38 };
+    }
+    function pt(c, t) {
       var u = 1 - t;
-      return [u * u * u * x0 + 3 * u * u * t * c1x + 3 * u * t * t * c2x + t * t * t * x1, u * u * u * y0 + 3 * u * u * t * c1y + 3 * u * t * t * c2y + t * t * t * y1];
+      return [u * u * u * c.x0 + 3 * u * u * t * c.c1x + 3 * u * t * t * c.c2x + t * t * t * c.x1, u * u * u * c.y0 + 3 * u * u * t * c.c1y + 3 * u * t * t * c.c2y + t * t * t * c.y1];
+    }
+    function schedule() {
+      if (live && vis && !d.hidden && !raf) raf = requestAnimationFrame(frame);
     }
     function frame(time) {
-      requestAnimationFrame(frame); if (!vis || !W) return;
+      raf = 0;
+      if (!vis || d.hidden || !W || !fil.length) return;
       tx += (mx - tx) * 0.05; ty += (my - ty) * 0.05;
+      var curves = fil.map(function (f) { return curve(f, time); });
       ctx.clearRect(0, 0, W, H); ctx.save(); ctx.translate(tx * 16, ty * 12);
       /* ribbon */
       var g = ctx.createLinearGradient(0, H, W, 0); g.addColorStop(0, 'rgba(120,87,255,0)'); g.addColorStop(0.5, 'rgba(120,87,255,.20)'); g.addColorStop(1, 'rgba(185,255,61,.30)');
-      ctx.beginPath(); var n = 40, i, p;
-      for (i = 0; i <= n; i++) { p = pt(fil[0], i / n, time); ctx[i ? 'lineTo' : 'moveTo'](p[0] - 34 * (i / n), p[1]); }
-      for (i = n; i >= 0; i--) { p = pt(fil[5], i / n, time); ctx.lineTo(p[0] + 60 * (i / n), p[1]); }
+      ctx.beginPath(); var n = 30, i, p;
+      for (i = 0; i <= n; i++) { p = pt(curves[0], i / n); ctx[i ? 'lineTo' : 'moveTo'](p[0] - 34 * (i / n), p[1]); }
+      for (i = n; i >= 0; i--) { p = pt(curves[5], i / n); ctx.lineTo(p[0] + 60 * (i / n), p[1]); }
       ctx.closePath(); ctx.fillStyle = g; ctx.fill();
       /* filaments */
       ctx.lineCap = 'round';
       for (var k = 0; k < fil.length; k++) {
-        var f = fil[k]; ctx.beginPath();
-        for (i = 0; i <= 50; i++) { p = pt(f, i / 50, time); ctx[i ? 'lineTo' : 'moveTo'](p[0], p[1]); }
+        var f = fil[k], c = curves[k]; ctx.beginPath();
+        for (i = 0; i <= 32; i++) { p = pt(c, i / 32); ctx[i ? 'lineTo' : 'moveTo'](p[0], p[1]); }
         ctx.strokeStyle = f.hue > 0.82 ? 'rgba(90,220,255,.45)' : f.hue > 0.6 ? 'rgba(150,120,255,.5)' : 'rgba(185,255,61,' + (0.25 + f.w * 0.25) + ')';
-        ctx.lineWidth = f.w; ctx.shadowColor = 'rgba(185,255,61,.7)'; ctx.shadowBlur = 8; ctx.stroke();
+        ctx.lineWidth = f.w; ctx.shadowColor = 'rgba(185,255,61,.7)'; ctx.shadowBlur = 4; ctx.stroke();
         /* travelling pulse */
-        var t = ((time * 0.00006 * f.s + f.o) % 1); p = pt(f, t, time);
+        var t = ((time * 0.00006 * f.s + f.o) % 1); p = pt(c, t);
         ctx.shadowBlur = 16; ctx.fillStyle = '#B9FF3D'; ctx.beginPath(); ctx.arc(p[0], p[1], 1.6 + f.w, 0, 6.283); ctx.fill();
       }
-      ctx.restore();
+      ctx.restore(); schedule();
     }
     size(); window.addEventListener('resize', size);
     var stage = cv.parentNode;
     stage.addEventListener('mousemove', function (e) { var r = stage.getBoundingClientRect(); mx = (e.clientX - r.left) / r.width - 0.5; my = (e.clientY - r.top) / r.height - 0.5; });
     stage.addEventListener('mouseleave', function () { mx = my = 0; });
-    if ('IntersectionObserver' in window) new IntersectionObserver(function (e) { vis = e[0].isIntersecting; }).observe(cv);
-    if (live) requestAnimationFrame(frame); else { vis = false; ctx.clearRect(0, 0, W, H); }
+    if ('IntersectionObserver' in window) new IntersectionObserver(function (e) { vis = e[0].isIntersecting; schedule(); }).observe(cv);
+    d.addEventListener('visibilitychange', schedule);
+    if (live) schedule(); else { vis = false; ctx.clearRect(0, 0, W, H); }
   }
 
   /* ---------- magnetic buttons ---------- */
   if (live && window.matchMedia('(pointer:fine)').matches) {
     $$('.aa-magnetic').forEach(function (el) {
+      var bounds;
+      el.addEventListener('mouseenter', function () { bounds = el.getBoundingClientRect(); });
       el.addEventListener('mousemove', function (e) {
-        var r = el.getBoundingClientRect(); el.style.transform = 'translate(' + (e.clientX - r.left - r.width / 2) * 0.22 + 'px,' + (e.clientY - r.top - r.height / 2) * 0.3 + 'px)';
+        if (!bounds) bounds = el.getBoundingClientRect();
+        el.style.transform = 'translate(' + (e.clientX - bounds.left - bounds.width / 2) * 0.22 + 'px,' + (e.clientY - bounds.top - bounds.height / 2) * 0.3 + 'px)';
       });
-      el.addEventListener('mouseleave', function () { el.style.transform = ''; });
+      el.addEventListener('mouseleave', function () { el.style.transform = ''; bounds = null; });
     });
     /* tilt chips (problem section) */
     $$('[data-tilt]').forEach(function (el) {
+      var bounds;
+      el.addEventListener('mouseenter', function () { bounds = el.getBoundingClientRect(); });
       el.addEventListener('mousemove', function (e) {
         if (!el.classList.contains('is-done')) return;
-        var r = el.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
+        if (!bounds) bounds = el.getBoundingClientRect();
+        var x = (e.clientX - bounds.left) / bounds.width - 0.5, y = (e.clientY - bounds.top) / bounds.height - 0.5;
         el.style.transform = 'perspective(800px) rotateY(' + x * 12 + 'deg) rotateX(' + -y * 12 + 'deg) translateZ(0)';
       });
-      el.addEventListener('mouseleave', function () { el.style.transform = ''; });
+      el.addEventListener('mouseleave', function () { el.style.transform = ''; bounds = null; });
     });
     /* spotlight cards (services section) */
     $$('[data-spot]').forEach(function (el) {
+      var bounds;
+      el.addEventListener('mouseenter', function () { bounds = el.getBoundingClientRect(); });
       el.addEventListener('mousemove', function (e) {
-        var r = el.getBoundingClientRect(); el.style.setProperty('--mx', (e.clientX - r.left) + 'px'); el.style.setProperty('--my', (e.clientY - r.top) + 'px');
+        if (!bounds) bounds = el.getBoundingClientRect();
+        el.style.setProperty('--mx', (e.clientX - bounds.left) + 'px'); el.style.setProperty('--my', (e.clientY - bounds.top) + 'px');
       });
+      el.addEventListener('mouseleave', function () { bounds = null; });
     });
   }
 

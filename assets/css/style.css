@@ -49,12 +49,11 @@ button{font:inherit;cursor:pointer}
 .aa-arrow--dark{background:var(--ink)}.aa-arrow--lime{background:var(--lime)}
 .aa-btn:hover .aa-arrow{transform:rotate(45deg) scale(1.08)}
 .aa-btn--ghost:hover{background:rgba(255,255,255,.05);border-color:var(--lime)}
-.aa-magnetic{will-change:transform}
 
 /* ---------- header ---------- */
 .aa-header{position:sticky;top:0;z-index:60;background:var(--ink);border-bottom:1px solid var(--line);transition:background .4s,backdrop-filter .4s}
 .admin-bar .aa-header{top:32px}
-.aa-header.is-scrolled{background:rgba(9,11,13,.8);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
+.aa-header.is-scrolled{background:rgba(9,11,13,.96)}
 .aa-nav{max-width:1600px;margin:0 auto;height:96px;padding:0 var(--pad);display:flex;align-items:center;justify-content:space-between;gap:24px}
 .aa-brand{display:flex;align-items:center;gap:10px}
 .aa-brand__mark{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--lime);transition:transform .6s var(--ease)}
@@ -94,7 +93,7 @@ button{font:inherit;cursor:pointer}
 .aa-visual__canvas{z-index:0}
 .aa-visual__head{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;padding:22px 22px 0;font-size:11px;font-weight:700;text-transform:uppercase;color:var(--cream);z-index:1}
 .aa-visual__head b{color:var(--lime)}
-.aa-signal{position:absolute;right:20px;bottom:20px;width:184px;padding:16px;display:flex;flex-direction:column;gap:6px;background:rgba(9,11,13,.88);border:1px solid var(--line);border-radius:16px;z-index:2;animation:aaFloat 5s ease-in-out infinite;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.aa-signal{position:absolute;right:20px;bottom:20px;width:184px;padding:16px;display:flex;flex-direction:column;gap:6px;background:rgba(9,11,13,.96);border:1px solid var(--line);border-radius:16px;z-index:2;animation:aaFloat 5s ease-in-out infinite}
 .aa-signal__label{font-size:10px;font-weight:700;text-transform:uppercase;color:var(--mute-d)}
 .aa-signal__value{font-size:30px;line-height:36px;font-weight:400;color:var(--lime)}
 .aa-signal__detail{font-size:11px;color:var(--mute-d)}
@@ -161,7 +160,7 @@ button{font:inherit;cursor:pointer}
 .aa-diag{display:flex;align-items:center;gap:10px;font-size:11px;font-weight:700;text-transform:uppercase;color:var(--cream)}
 .aa-scrub .aa-w{opacity:.18;transition:opacity .25s linear}
 .aa-chips{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-.aa-chip{display:flex;flex-direction:column;justify-content:space-between;gap:48px;min-height:242px;padding:24px;background:var(--ink2);border:1px solid var(--line);border-radius:16px;transform-style:preserve-3d;transition:border-color .4s;will-change:transform}
+.aa-chip{display:flex;flex-direction:column;justify-content:space-between;gap:48px;min-height:242px;padding:24px;background:var(--ink2);border:1px solid var(--line);border-radius:16px;transform-style:preserve-3d;transition:border-color .4s}
 .aa-chip:hover{border-color:var(--lime)}
 .aa-chip__head{display:flex;justify-content:space-between;align-items:center}
 .aa-chip__head b{font-size:11px;font-weight:700;color:var(--mute-d)}
