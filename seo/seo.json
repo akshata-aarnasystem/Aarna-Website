@@ -1,0 +1,66 @@
+{
+  "site": {
+    "name": "Aarna Systems",
+    "locale": "en_US",
+    "ogImage": "assets/images/og-image.png",
+    "favicon": "assets/images/favicon.png",
+    "twitter": ""
+  },
+  "pages": {
+    "index.html": {
+      "title": "Aarna Systems | SEO, Paid Media and Web Engineering",
+      "description": "We engineer digital growth. SEO, paid media and web engineering in one team, built around the numbers that matter to your business.",
+      "changefreq": "weekly",
+      "priority": "1.0"
+    },
+    "pages/services.html": {
+      "title": "Services | Aarna Systems",
+      "description": "Digital strategy, technical SEO, website development, search visibility, conversion optimisation and marketing automation from one growth team.",
+      "changefreq": "monthly",
+      "priority": "0.9"
+    },
+    "pages/about.html": {
+      "title": "About | Aarna Systems",
+      "description": "Growth partners for brands that plan to scale. One team across SEO, paid media and web engineering, measured on pipeline and revenue.",
+      "changefreq": "monthly",
+      "priority": "0.7"
+    },
+    "pages/resources.html": {
+      "title": "Resources | Aarna Systems",
+      "description": "Practical SEO, conversion and paid media checklists, plus answers to common questions about working with Aarna Systems.",
+      "changefreq": "monthly",
+      "priority": "0.6"
+    },
+    "pages/contact.html": {
+      "title": "Contact | Aarna Systems",
+      "description": "Tell us about your project and ask for a free growth audit. We reply within one working day.",
+      "changefreq": "yearly",
+      "priority": "0.8"
+    },
+    "pages/packages-pricing.html": {
+      "title": "Packages & Pricing | Aarna Systems",
+      "description": "Explore GTM and RevOps engagement options, scope and package fit.",
+      "changefreq": "monthly",
+      "priority": "0.8"
+    },
+    "pages/how-we-work.html": {
+      "title": "How We Work | Aarna Systems",
+      "description": "See the engagement process, delivery stages, responsibilities and handover approach.",
+      "changefreq": "monthly",
+      "priority": "0.7"
+    },
+    "pages/free-gtm-audit.html": {
+      "title": "Free GTM Audit | Aarna Systems",
+      "description": "Request a review of your GTM system, CRM, funnel and revenue operations.",
+      "changefreq": "monthly",
+      "priority": "0.9"
+    },
+    "pages/schema-reference.html": {
+      "title": "Structured Data Reference | Aarna Systems",
+      "description": "Overview of structured data types used across the Aarna Systems website.",
+      "noindex": true,
+      "changefreq": "yearly",
+      "priority": "0.1"
+    }
+  }
+}
